@@ -4,14 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "02_Spawn/CStaticMeshActor.h"
-#include "CStaticMeshActor_Shpere.generated.h"
+#include "CStaticMeshActor_Sphere.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BASICSYNTAXCPP_API ACStaticMeshActor_Shpere : public ACStaticMeshActor
+class BASICSYNTAXCPP_API ACStaticMeshActor_Sphere : public ACStaticMeshActor
 {
 	GENERATED_BODY()
-	
+
+public:
+	ACStaticMeshActor_Sphere();
+		
 };
