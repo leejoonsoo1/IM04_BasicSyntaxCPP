@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "CPlayer.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class BASICSYNTAXCPP_API ACPlayer : public ACharacter
 {
@@ -30,4 +33,11 @@ private:
 	void OnMoveForward(float Axis);
 	void OnMoveRight(float Axis);
 
+private:
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	USpringArmComponent* SpringArmComp;
+	
+	// Our Main View Target
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UCameraComponent* CameraComp;
 };
