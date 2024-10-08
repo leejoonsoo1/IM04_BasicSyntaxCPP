@@ -2,7 +2,7 @@
 
 
 #include "CGameMode.h"
-#include "04_Characters/CPlayer.h"
+#include "Characters/CPlayer.h"
 
 ACGameMode::ACGameMode()
 {

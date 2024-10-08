@@ -32,6 +32,9 @@ public:
 private:
 	void OnMoveForward(float Axis);
 	void OnMoveRight(float Axis);
+	
+	void OnSprint();
+	void OffSprint();
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
