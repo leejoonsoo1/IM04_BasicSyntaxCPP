@@ -6,7 +6,6 @@ void ACBoxBase_Multicast::BeginPlay()
 	Super::BeginPlay();
 
 	OnActorBeginOverlap.AddDynamic(this, &ACBoxBase_Multicast::BeginOverlap);
-
 }
 
 void ACBoxBase_Multicast::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)

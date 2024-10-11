@@ -17,13 +17,13 @@ void ACStaticMeshActor::BeginPlay()
 	Super::BeginPlay();
 
 	UObject* Asset = StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, TEXT("/Game/StaticMeshes/MI_StaticMesh"));
-	UMaterialInstanceConstant* MaterialAsset = Cast<UMaterialInstanceConstant> (Asset);
+	UMaterialInstanceConstant* MaterialAsset = Cast<UMaterialInstanceConstant>(Asset);
 
 	if (MaterialAsset)
 	{
 		DynamicMaterial = UMaterialInstanceDynamic::Create(MaterialAsset, nullptr);
 		MeshComp->SetMaterial(0, DynamicMaterial);
-
+		
 		// 이 함수를 사용하기 위해서는 호출되는 함수는 파라미터를 가지면 안 된다.
 		// 리턴 타입도 있으면 안됨.
 		UKismetSystemLibrary::K2_SetTimer(this, "ChangeColor", 1.f, true);

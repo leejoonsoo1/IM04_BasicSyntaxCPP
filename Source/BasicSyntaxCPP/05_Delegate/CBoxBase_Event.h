@@ -2,22 +2,23 @@
 
 #include "CoreMinimal.h"
 #include "04_Collision/CBoxBase.h"
-#include "CBoxBase_Multicast.generated.h"
-
-DECLARE_MULTICAST_DELEGATE_TwoParams(FBoxMulticast, int32, FLinearColor);
+#include "CBoxBase_Event.generated.h"
 
 UCLASS()
-class BASICSYNTAXCPP_API ACBoxBase_Multicast : public ACBoxBase
+class BASICSYNTAXCPP_API ACBoxBase_Event : public ACBoxBase
 {
 	GENERATED_BODY()
 
+public:
+	DECLARE_EVENT_OneParam(ACBoxBase_Event, FBoxEvent, int32);
+
 protected:
 	virtual void BeginPlay() override;
-
+	
 private:
 	UFUNCTION()
 	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 public:
-	FBoxMulticast OnBoxMulticast;
+	FBoxEvent OnBoxEvent;
 };
