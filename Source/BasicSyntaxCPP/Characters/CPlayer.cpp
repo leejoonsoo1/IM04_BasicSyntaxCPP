@@ -14,6 +14,7 @@ ACPlayer::ACPlayer()
 	
 	// Create Camera Component
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
+
 	SpringArmComp->SetupAttachment(RootComponent);
 	SpringArmComp->SetRelativeLocation(FVector(0, 0, 60));
 	SpringArmComp->TargetArmLength = 200.f;
@@ -24,6 +25,7 @@ ACPlayer::ACPlayer()
 
 	//Set Skeletal Mesh Asset
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/Character/Mesh/SK_Mannequin"));
+
 	if (MeshAsset.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);

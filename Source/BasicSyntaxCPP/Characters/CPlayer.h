@@ -41,6 +41,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ResetBodyColor();
+	// 오늘 학원가면 할 거.
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
