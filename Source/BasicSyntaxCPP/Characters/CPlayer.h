@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,6 +6,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UMaterialInstanceDynamic;
 
 UCLASS()
 class BASICSYNTAXCPP_API ACPlayer : public ACharacter
@@ -36,6 +35,12 @@ private:
 	void OnSprint();
 	void OffSprint();
 
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetBodyColor(FLinearColor InBodyColor, FLinearColor InLogoColor);
+
+	UFUNCTION(BlueprintCallable)
+	void ResetBodyColor();
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
@@ -43,4 +48,8 @@ private:
 	// Our Main View Target
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UCameraComponent* CameraComp;
+
+private:
+	UMaterialInstanceDynamic* BodyMaterial;
+	UMaterialInstanceDynamic* LogoMaterial;
 };
