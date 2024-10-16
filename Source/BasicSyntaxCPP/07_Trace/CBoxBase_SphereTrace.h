@@ -9,7 +9,6 @@ class BASICSYNTAXCPP_API ACBoxBase_SphereTrace : public ACBoxBase
 {
 	GENERATED_BODY()
 
-
 protected:
 	virtual	void BeginPlay() override;
 };
