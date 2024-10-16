@@ -14,7 +14,6 @@ ACLineTrace::ACLineTrace()
 	TextRenderComp->SetRelativeRotation(FRotator(0, 180, 0));
 	TextRenderComp->SetTextRenderColor(FColor::Red);
 	TextRenderComp->SetHorizontalAlignment(EHTA_Center);
-	TextRenderComp->SetTextRenderColor(FColor::Red);
 	TextRenderComp->SetText(GetName());
 }
 
@@ -29,6 +28,8 @@ void ACLineTrace::BeginPlay()
 
 	Vertices[0] = Cast<ACVertex>(Actors[0]);
 	Vertices[1] = Cast<ACVertex>(Actors[1]);
+
+	OnLineTraceHit.AddDynamic(this, &ACLineTrace::LineTraceHit);
 }
 
 // 이벤트 기반을 쓰면 Tick 함수가 필요가 없어진다.
@@ -55,3 +56,8 @@ void ACLineTrace::Tick(float DeltaTime)
 	OnLineTraceHit.Broadcast(Hit.GetActor(), FLinearColor::Red);
 }
 
+void ACLineTrace::LineTraceHit(AActor* InActor, FLinearColor InColor)
+{
+	TextRenderComp->SetTextRenderColor(InColor.ToFColor(true));
+	TextRenderComp->SetText(InActor->GetName());
+}

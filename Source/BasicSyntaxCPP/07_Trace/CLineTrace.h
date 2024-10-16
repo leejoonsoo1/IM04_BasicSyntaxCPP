@@ -32,6 +32,10 @@ private:
 	UTextRenderComponent* TextRenderComp;
 
 private:
+	UFUNCTION()
+	void LineTraceHit(AActor* InActor, FLinearColor InColor);
+
+private:
 	ACVertex* Vertices[2];
 
 public:
