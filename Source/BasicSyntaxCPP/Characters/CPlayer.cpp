@@ -1,10 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CPlayer.h"
+#include "BasicSyntaxCpp.h"
 #include "GameFramework\SpringArmComponent.h"
 #include "GameFramework\CharacterMovementComponent.h"
-
 #include "Camera\CameraComponent.h"
+#include "Components\StaticMeshComponent.h"
+#include "Weapons\CAR4.h"
 
 // Sets default values
 ACPlayer::ACPlayer()
@@ -23,7 +25,7 @@ ACPlayer::ACPlayer()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 
-	//Set Skeletal Mesh Asset
+	// Set Skeletal Mesh Asset
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/Character/Mesh/SK_Mannequin"));
 
 	if (MeshAsset.Succeeded())
@@ -40,6 +42,19 @@ ACPlayer::ACPlayer()
 		}
 	}
 
+	// Set BackPack Asset
+	BackPackComp = CreateDefaultSubobject<UStaticMeshComponent>("BackPackComp");
+	ConstructorHelpers::FObjectFinder<UStaticMesh> BackPackMeshAsset(TEXT("/Game/StaticMeshes/Backpack/Backpack"));
+
+	if (BackPackMeshAsset.Succeeded())
+	{
+		BackPackComp->SetStaticMesh(BackPackMeshAsset.Object);
+	}
+
+	BackPackComp->SetupAttachment(GetMesh(), "Backpack");	
+
+	CHelpers::GetClass(&WeaponClass, "/Game/AR4/BP_CAR4");
+
 	//Character Movement
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -53,9 +68,14 @@ void ACPlayer::BeginPlay()
 
 	BodyMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), nullptr);
 	LogoMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(1), nullptr);
-	
+
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
+
+	FActorSpawnParameters SpawnParam;
+	SpawnParam.Owner = this;
+	AR4 = GetWorld()->SpawnActor<ACAR4>(WeaponClass, SpawnParam);
+
 }
 
 // Called every frame
@@ -78,6 +98,9 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACPlayer::OnSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACPlayer::OffSprint);
+
+	PlayerInputComponent->BindAction("Rifle", IE_Pressed, this, &ACPlayer::OnRifle);
+
 }
 
 void ACPlayer::OnMoveForward(float Axis)
@@ -104,6 +127,10 @@ void ACPlayer::OnSprint()
 void ACPlayer::OffSprint()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 400;
+}
+
+void ACPlayer::OnRifle()
+{
 }
 
 void ACPlayer::SetBodyColor(FLinearColor InBodyColor, FLinearColor InLogoColor)

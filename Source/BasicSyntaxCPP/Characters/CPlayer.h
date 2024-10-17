@@ -7,6 +7,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UMaterialInstanceDynamic;
+class ACAR4;
 
 UCLASS()
 class BASICSYNTAXCPP_API ACPlayer : public ACharacter
@@ -35,6 +36,8 @@ private:
 	void OnSprint();
 	void OffSprint();
 
+	void OnRifle();
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetBodyColor(FLinearColor InBodyColor, FLinearColor InLogoColor);
@@ -48,9 +51,17 @@ private:
 	
 	// Our Main View Target
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-	UCameraComponent* CameraComp;
+	UCameraComponent* CameraComp;	
+	
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UStaticMeshComponent* BackPackComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Class")
+	TSubclassOf<ACAR4> WeaponClass;
 
 private:
 	UMaterialInstanceDynamic* BodyMaterial;
 	UMaterialInstanceDynamic* LogoMaterial;
+
+	ACAR4* AR4;
 };

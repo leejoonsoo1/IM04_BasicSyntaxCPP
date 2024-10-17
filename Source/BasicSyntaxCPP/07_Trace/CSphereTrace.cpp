@@ -31,8 +31,9 @@ void ACSphereTrace::BeginPlay()
 
 void ACSphereTrace::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (OtherActor->IsA<ACharacter>() == false) return;
-
+	if (OtherActor->IsA<ACharacter>() == false) 
+		return;
+	
 	FVector Start = GetActorLocation();
 	FVector End = Start + FVector(0, 0, 10);
 
@@ -43,9 +44,7 @@ void ACSphereTrace::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 
 	TArray<AActor*> Ignores;
 	TArray<FHitResult> Hits;
-	
-	
-	
+		
 	if (UKismetSystemLibrary::SphereTraceMultiForObjects(GetWorld(), Start, End, 1000, ObjectTypes, false, Ignores, EDrawDebugTrace::ForDuration, Hits, true))
 	{
 		ParticleComp->ResetParticles();
