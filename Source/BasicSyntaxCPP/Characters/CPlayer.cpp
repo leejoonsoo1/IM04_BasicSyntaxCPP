@@ -19,6 +19,7 @@ ACPlayer::ACPlayer()
 
 	SpringArmComp->SetupAttachment(RootComponent);
 	SpringArmComp->SetRelativeLocation(FVector(0, 0, 60));
+	SpringArmComp->SocketOffset = FVector(0, 60, 0);
 	SpringArmComp->TargetArmLength = 200.f;
 	SpringArmComp->bUsePawnControlRotation = true;
 
@@ -75,7 +76,6 @@ void ACPlayer::BeginPlay()
 	FActorSpawnParameters SpawnParam;
 	SpawnParam.Owner = this;
 	AR4 = GetWorld()->SpawnActor<ACAR4>(WeaponClass, SpawnParam);
-
 }
 
 // Called every frame
@@ -100,6 +100,9 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACPlayer::OffSprint);
 
 	PlayerInputComponent->BindAction("Rifle", IE_Pressed, this, &ACPlayer::OnRifle);
+
+	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &ACPlayer::OnAim);
+	PlayerInputComponent->BindAction("Aim", IE_Released, this, &ACPlayer::OffAim);
 
 }
 
@@ -133,7 +136,13 @@ void ACPlayer::OnRifle()
 {
 	if (AR4->IsEquipped())
 	{
+		if (AR4->IsAiming())
+		{
+			OffAim();
+		}
+
 		AR4->UnEquip();
+		return;
 	}
 
 	AR4->Equip();
@@ -153,4 +162,36 @@ void ACPlayer::ResetBodyColor()
 		FLinearColor(0.45098f, 0.403922f, 0.360784f),
 		FLinearColor(0.45098f, 0.403922f, 0.360784f)
 	);
+}
+
+void ACPlayer::OnAim()
+{
+	if (!AR4->IsEquipped()) return;
+	if (AR4->IsPlayingMontage()) return;
+
+	bUseControllerRotationYaw = true;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+
+	SpringArmComp->TargetArmLength = 100.f;
+	SpringArmComp->SocketOffset = FVector(0, 30, 10);
+
+	AR4->EnableAim();
+
+	ZoomIn();
+}
+
+void ACPlayer::OffAim() 
+{
+	if (!AR4->IsEquipped()) return;
+	if (AR4->IsPlayingMontage()) return;
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	SpringArmComp->TargetArmLength = 200.f;
+	SpringArmComp->SocketOffset = FVector(0, 60, 0);
+
+	AR4->DisableAim();
+
+	ZoomOut();
 }

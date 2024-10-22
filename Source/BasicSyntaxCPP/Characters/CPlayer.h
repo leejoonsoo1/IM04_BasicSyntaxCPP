@@ -34,12 +34,22 @@ public:
 	// Inherited via ICWeaponInterface
 	FORCEINLINE ACAR4* GetWeapon() override { return AR4; }
 
+protected:
+	UFUNCTION(BlueprintImplementableEvent)
+	void ZoomIn();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void ZoomOut();
+
 private:
 	void OnMoveForward(float Axis);
 	void OnMoveRight(float Axis);
 	
 	void OnSprint();
 	void OffSprint();
+
+	void OnAim();
+	void OffAim();
 
 	void OnRifle();
 
@@ -49,13 +59,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ResetBodyColor();
-	// 오늘 학원가면 할 거.
-private:
+
+protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
 	
 	// Our Main View Target
-	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UPROPERTY(BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComp;	
 	
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
