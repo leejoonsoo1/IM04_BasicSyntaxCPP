@@ -2,6 +2,8 @@
 #include "BasicSyntaxCpp.h"
 #include "GameFramework/Character.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "DrawDebugHelpers.h"
+#include "CWeaponInterface.h"
 
 ACAR4::ACAR4()
 {
@@ -19,6 +21,7 @@ ACAR4::ACAR4()
 	HolsterSocket	= "Holster_AR4";
 	HandSocket		= "Hand_AR4";
 	MontagePlayRate = 1.75f;
+	ShootRange		= 10000.f;
 }
 
 void ACAR4::BeginPlay()
@@ -36,6 +39,18 @@ void ACAR4::BeginPlay()
 void ACAR4::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!bAiming) return;
+
+	// LineTrace
+	// Start, End 
+	ICWeaponInterface* OwnerInterface = Cast<ICWeaponInterface>(OwnerCharacter);
+	if (!OwnerInterface) return;
+
+	FVector Start, End, Direction;
+	OwnerInterface->GetAimInRay(Start, End, Direction);
+
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1.0f, (uint8)0U, 3.f);
 }
 
 void ACAR4::EnableAim()

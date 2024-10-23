@@ -7,6 +7,8 @@
 #include "Camera\CameraComponent.h"
 #include "Components\StaticMeshComponent.h"
 #include "Weapons\CAR4.h"
+#include "Blueprint/UserWidget.h"
+#include "UI/CAimWidget.h"
 
 // Sets default values
 ACPlayer::ACPlayer()
@@ -60,6 +62,11 @@ ACPlayer::ACPlayer()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->MaxWalkSpeed = 400.f;
+
+	// Get Aim Widget Class Asset
+	CHelpers::GetClass(&AimWidgetClass, "/Game/UI/WB_Aim");
+
+
 }
 
 // Called when the game starts or when spawned
@@ -67,15 +74,22 @@ void ACPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Set Dynamic Material
 	BodyMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), nullptr);
 	LogoMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(1), nullptr);
 
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
 
+	// Spawn AR4
 	FActorSpawnParameters SpawnParam;
 	SpawnParam.Owner = this;
 	AR4 = GetWorld()->SpawnActor<ACAR4>(WeaponClass, SpawnParam);
+
+	// Create Aim Widget
+	AimWidget = CreateWidget<UCAimWidget>(GetController<APlayerController>(), AimWidgetClass);
+	AimWidget->AddToViewport();
+	AimWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
 // Called every frame
@@ -164,6 +178,17 @@ void ACPlayer::ResetBodyColor()
 	);
 }
 
+void ACPlayer::GetAimInRay(FVector& OutAimStart, FVector& OutAimEnd, FVector& OutAimDirection)
+{
+	OutAimDirection = CameraComp->GetForwardVector();
+
+	OutAimStart = CameraComp->GetComponentToWorld().GetLocation();
+	OutAimEnd = OutAimStart + OutAimDirection * AR4->GetShootRange();
+
+	//FVector MuzzleSocketLoction = AR4->GetMesh()->GetSocketLocation("MuzzleFlash");
+
+}
+
 void ACPlayer::OnAim()
 {
 	if (!AR4->IsEquipped()) return;
@@ -178,6 +203,9 @@ void ACPlayer::OnAim()
 	AR4->EnableAim();
 
 	ZoomIn();
+
+	// 보여지긴 하지만, 위젯과 마우스 충돌을 감지하지 않는다.
+	AimWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 }
 
 void ACPlayer::OffAim() 
@@ -194,4 +222,6 @@ void ACPlayer::OffAim()
 	AR4->DisableAim();
 
 	ZoomOut();
+
+	AimWidget->SetVisibility(ESlateVisibility::Hidden);
 }
