@@ -43,6 +43,14 @@ public:
 	void Begin_UnEquip();
 	void End_UnEquip();
 
+public:
+	void OnFire();
+	void OffFire();
+
+private:
+	UFUNCTION()
+	void Firing_Internal();
+
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USkeletalMeshComponent* MeshComp;
@@ -72,4 +80,5 @@ private:
 	bool bEquipped;
 	bool bPlayingMontage;
 	bool bAiming;
+	bool bFiring;
 };

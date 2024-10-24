@@ -33,7 +33,9 @@ public:
 public:
 	// Inherited via ICWeaponInterface
 	FORCEINLINE ACAR4* GetWeapon() override { return AR4; }
-	void GetAimInRay(FVector& OutAimStart, FVector& OutAimEnd, FVector& OutAimDirection) override;
+	void GetAimRay(FVector& OutAimStart, FVector& OutAimEnd, FVector& OutAimDirection) override;
+	void OnTarget() override;
+	void OffTarget() override;
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
@@ -42,12 +44,18 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ZoomOut();
 
+	UFUNCTION(Exec)
+	void AddLaunch(float Height = 1000.f);
+
 private:
 	void OnMoveForward(float Axis);
 	void OnMoveRight(float Axis);
 	
 	void OnSprint();
 	void OffSprint();
+
+	void OnFire();
+	void OffFire();
 
 	void OnAim();
 	void OffAim();

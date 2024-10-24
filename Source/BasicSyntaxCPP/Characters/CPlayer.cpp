@@ -115,9 +115,20 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	PlayerInputComponent->BindAction("Rifle", IE_Pressed, this, &ACPlayer::OnRifle);
 
+	PlayerInputComponent->BindAction("Action", IE_Pressed, this, &ACPlayer::OnFire);
+	PlayerInputComponent->BindAction("Action", IE_Released, this, &ACPlayer::OffFire);	
+	
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &ACPlayer::OnAim);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &ACPlayer::OffAim);
 
+}
+
+void ACPlayer::AddLaunch(float Height)
+{
+	FVector Current = GetActorLocation();
+
+	// bSweep 막히는게 있으면 가다가 멈춘다.
+	TeleportTo(Current + FVector(0, 0, Height), GetActorRotation());
 }
 
 void ACPlayer::OnMoveForward(float Axis)
@@ -144,6 +155,16 @@ void ACPlayer::OnSprint()
 void ACPlayer::OffSprint()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 400;
+}
+
+void ACPlayer::OnFire()
+{
+	AR4->OnFire();
+}
+
+void ACPlayer::OffFire()
+{
+	AR4->OffFire();
 }
 
 void ACPlayer::OnRifle()
@@ -178,15 +199,35 @@ void ACPlayer::ResetBodyColor()
 	);
 }
 
-void ACPlayer::GetAimInRay(FVector& OutAimStart, FVector& OutAimEnd, FVector& OutAimDirection)
+void ACPlayer::GetAimRay(FVector& OutAimStart, FVector& OutAimEnd, FVector& OutAimDirection)
 {
 	OutAimDirection = CameraComp->GetForwardVector();
 
-	OutAimStart = CameraComp->GetComponentToWorld().GetLocation();
-	OutAimEnd = OutAimStart + OutAimDirection * AR4->GetShootRange();
+	//Todo. 내적을 이용해보자~ 카메라위치-총구위치
+	FVector CamLoc = CameraComp->GetComponentToWorld().GetLocation();
+	FVector MuzzleLoc = AR4->GetMesh()->GetSocketLocation("MuzzleFlash");
+
+	// | : 내적 ^ : 외적
+	float Projected = (MuzzleLoc - CamLoc) | OutAimDirection;
+	OutAimStart = CamLoc + OutAimDirection * Projected;
+	
+
+	FVector RandomConeDegree = UKismetMathLibrary::RandomUnitVectorInConeInDegrees(OutAimDirection, 0.2f);
+	RandomConeDegree *= AR4->GetShootRange();
+	
+	OutAimEnd = OutAimStart + RandomConeDegree;
 
 	//FVector MuzzleSocketLoction = AR4->GetMesh()->GetSocketLocation("MuzzleFlash");
+}
 
+void ACPlayer::OnTarget()
+{
+	AimWidget->OnTarget();
+}
+
+void ACPlayer::OffTarget()
+{
+	AimWidget->OffTarget();
 }
 
 void ACPlayer::OnAim()
