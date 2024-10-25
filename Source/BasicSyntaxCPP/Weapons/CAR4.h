@@ -51,8 +51,8 @@ private:
 	UFUNCTION()
 	void Firing_Internal();
 
-private:
-	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+protected:
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 	USkeletalMeshComponent* MeshComp;
 
 private:
