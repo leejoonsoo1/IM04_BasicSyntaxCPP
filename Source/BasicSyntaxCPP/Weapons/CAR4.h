@@ -74,6 +74,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Range")
 	float ShootRange;
 
+	UPROPERTY(EditDefaultsOnly, Category = "CameraShake")
+	TSubclassOf<UCameraShake> ShakeClass;
+
 private:
 	ACharacter* OwnerCharacter;
 

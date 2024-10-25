@@ -24,6 +24,8 @@ ACAR4::ACAR4()
 	HandSocket		= "Hand_AR4";
 	MontagePlayRate = 1.75f;
 	ShootRange		= 10000.f;
+
+	CHelpers::GetClass(&ShakeClass, "/Game/AR4/Shake_Fire");
 }
 
 void ACAR4::BeginPlay()
@@ -146,6 +148,17 @@ void ACAR4::OffFire()
 
 void ACAR4::Firing_Internal()
 {
+	// Camera Shake
+	if (!OwnerCharacter) return;
+
+	APlayerController* PC = OwnerCharacter->GetController<APlayerController>();
+
+	if (PC)
+	{
+		PC->PlayerCameraManager->PlayCameraShake(ShakeClass);
+	}
+
+	// LineTrace for Visibility
 	ICWeaponInterface* OwnerInterface = Cast<ICWeaponInterface>(OwnerCharacter);
 	if (!OwnerInterface) return;
 
