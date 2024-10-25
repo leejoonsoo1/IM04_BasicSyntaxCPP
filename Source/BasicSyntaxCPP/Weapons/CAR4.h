@@ -52,7 +52,7 @@ private:
 	void Firing_Internal();
 
 private:
-	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 	USkeletalMeshComponent* MeshComp;
 
 private:
