@@ -2,13 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "CWeapon.h"
 #include "CAR4.generated.h"
 
 class UAnimMontage;
 class ACharacter;
 
 UCLASS()
-class BASICSYNTAXCPP_API ACAR4 : public AActor
+class BASICSYNTAXCPP_API ACAR4 : public AActor, public CWeapon
 {
 	GENERATED_BODY()
 	
@@ -29,6 +30,8 @@ public:
 	FORCEINLINE bool IsEquipped() { return bEquipped; }
 	FORCEINLINE bool IsPlayingMontage() { return bPlayingMontage; }
 	FORCEINLINE bool IsAiming() { return bAiming; }
+	FORCEINLINE bool IsReLoading() { return bReload; }
+
 	FORCEINLINE USkeletalMeshComponent* GetMesh() { return MeshComp; }
 	FORCEINLINE float GetShootRange() { return ShootRange; }
 
@@ -47,6 +50,9 @@ public:
 	void OnFire();
 	void OffFire();
 
+	void Reload() override;
+	void Begin_Reload() override;
+	void End_Reload() override;
 private:
 	UFUNCTION()
 	void Firing_Internal();
@@ -69,7 +75,11 @@ private:
 	UAnimMontage* UnEquipMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* ReLoadMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	float MontagePlayRate;
+
 
 	UPROPERTY(EditDefaultsOnly, Category = "Range")
 	float ShootRange;
@@ -79,9 +89,11 @@ private:
 
 private:
 	ACharacter* OwnerCharacter;
+	CWeapon* Weapon;
 
 	bool bEquipped;
 	bool bPlayingMontage;
 	bool bAiming;
 	bool bFiring;
+	bool bReload;
 };

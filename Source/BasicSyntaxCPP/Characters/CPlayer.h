@@ -10,6 +10,7 @@ class UCameraComponent;
 class UMaterialInstanceDynamic;
 class ACAR4;
 class UCAimWidget;
+
 UCLASS()
 class BASICSYNTAXCPP_API ACPlayer : public ACharacter, public ICWeaponInterface
 {
@@ -61,6 +62,8 @@ private:
 	void OffAim();
 
 	void OnRifle();
+
+	void Reload();
 
 public:
 	UFUNCTION(BlueprintCallable)

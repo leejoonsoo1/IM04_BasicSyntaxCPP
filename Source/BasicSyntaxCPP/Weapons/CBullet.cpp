@@ -1,12 +1,12 @@
 #include "CBullet.h"
 #include "BasicSyntaxCpp.h"
-#include "GameFramework/ProjectileMovementComponent.h"
+#include "GameFramework\ProjectileMovementComponent.h"
 
 ACBullet::ACBullet()
 {
 	CHelpers::CreateSceneComponent(this, &MeshComp, "MeshComp");
 	CHelpers::CreateActorComponent(this, &MoveComp, "MoveComp");
-	
+
 	UStaticMesh* MeshAsset;
 	CHelpers::GetAsset(&MeshAsset, "/Game/StaticMeshes/SM_Sphere");
 	MeshComp->SetStaticMesh(MeshAsset);
@@ -25,6 +25,6 @@ ACBullet::ACBullet()
 void ACBullet::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	SetLifeSpan(5);
 }

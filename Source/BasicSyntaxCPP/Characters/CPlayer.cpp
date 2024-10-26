@@ -121,6 +121,7 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &ACPlayer::OnAim);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &ACPlayer::OffAim);
 
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &ACPlayer::Reload);
 }
 
 void ACPlayer::AddLaunch(float Height)
@@ -183,6 +184,11 @@ void ACPlayer::OnRifle()
 	AR4->Equip();
 }
 
+void ACPlayer::Reload()
+{
+	AR4->Reload();
+}
+
 void ACPlayer::SetBodyColor(FLinearColor InBodyColor, FLinearColor InLogoColor)
 {
 	// Vector Parameter에 이름이 BodyColor이기 때문에 BodyColor를 매개변수로 준다.
@@ -234,6 +240,7 @@ void ACPlayer::OnAim()
 {
 	if (!AR4->IsEquipped()) return;
 	if (AR4->IsPlayingMontage()) return;
+	if (AR4->IsReLoading()) return;
 
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->bOrientRotationToMovement = false;

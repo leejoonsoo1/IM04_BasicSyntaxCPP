@@ -10,8 +10,8 @@ UCLASS()
 class BASICSYNTAXCPP_API ACBullet : public AActor
 {
 	GENERATED_BODY()
-
-public:
+	
+public:	
 	ACBullet();
 
 protected:
@@ -23,5 +23,4 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UProjectileMovementComponent* MoveComp;
-
 };
