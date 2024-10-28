@@ -83,6 +83,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UStaticMeshComponent* BackPackComp;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UStaticMeshComponent* MagazineComp;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
 	TSubclassOf<ACAR4> WeaponClass;
 

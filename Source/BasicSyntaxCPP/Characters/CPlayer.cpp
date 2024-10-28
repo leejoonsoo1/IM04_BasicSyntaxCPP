@@ -56,6 +56,14 @@ ACPlayer::ACPlayer()
 
 	BackPackComp->SetupAttachment(GetMesh(), "Backpack");	
 
+	UStaticMesh* MagazineMesh;
+	MagazineComp = CreateDefaultSubobject<UStaticMeshComponent>("MagazineComp");
+	
+	CHelpers::GetAsset(&MagazineMesh, "/Game/Weapons/Meshes/Magazine/SM_AR4_Mag_Empty");
+	MagazineComp->SetStaticMesh(MagazineMesh);
+	//MagazineComp->SetupAttachment(GetMesh(), "hand_Magazine");
+	//MagazineComp->SetVisibility(false);
+
 	CHelpers::GetClass(&WeaponClass, "/Game/AR4/BP_CAR4");
 
 	//Character Movement
@@ -65,8 +73,6 @@ ACPlayer::ACPlayer()
 
 	// Get Aim Widget Class Asset
 	CHelpers::GetClass(&AimWidgetClass, "/Game/UI/WB_Aim");
-
-
 }
 
 // Called when the game starts or when spawned
@@ -241,7 +247,7 @@ void ACPlayer::OnAim()
 	if (!AR4->IsEquipped()) return;
 	if (AR4->IsPlayingMontage()) return;
 	if (AR4->IsReLoading()) return;
-
+	
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 

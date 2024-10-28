@@ -20,7 +20,7 @@ ACAR4::ACAR4()
 	CHelpers::GetAsset(&EquipMontage, "/Game/Character/Animations/AR4/Rifle_Grab_Montage");
 	CHelpers::GetAsset(&UnEquipMontage, "/Game/Character/Animations/AR4/Rifle_UnGrab_Montage");
 	CHelpers::GetAsset(&ReLoadMontage, "/Game/Character/Animations/AR4/Rifle_Jog_Reload_Montage");
-
+	
 	HolsterSocket	= "Holster_AR4";
 	HandSocket		= "Hand_AR4";
 	MontagePlayRate = 1.75f;
@@ -134,11 +134,7 @@ void ACAR4::End_UnEquip()
 
 void ACAR4::OnFire()
 {
-	if (!bEquipped) return;
-	if (bPlayingMontage) return;
-
-	if (!bAiming) return;
-	if (bFiring) return;
+	if (!bEquipped || bPlayingMontage || !bAiming || bFiring || bReload) return;
 
 	bFiring = true;
 

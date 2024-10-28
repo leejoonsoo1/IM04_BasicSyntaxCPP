@@ -80,7 +80,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	float MontagePlayRate;
 
-
 	UPROPERTY(EditDefaultsOnly, Category = "Range")
 	float ShootRange;
 
