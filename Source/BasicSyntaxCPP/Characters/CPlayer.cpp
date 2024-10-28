@@ -56,11 +56,11 @@ ACPlayer::ACPlayer()
 
 	BackPackComp->SetupAttachment(GetMesh(), "Backpack");	
 
-	UStaticMesh* MagazineMesh;
-	MagazineComp = CreateDefaultSubobject<UStaticMeshComponent>("MagazineComp");
+	//UStaticMesh* MagazineMesh;
+	//MagazineComp = CreateDefaultSubobject<UStaticMeshComponent>("MagazineComp");
 	
-	CHelpers::GetAsset(&MagazineMesh, "/Game/Weapons/Meshes/Magazine/SM_AR4_Mag_Empty");
-	MagazineComp->SetStaticMesh(MagazineMesh);
+	//CHelpers::GetAsset(&MagazineMesh, "/Game/Weapons/Meshes/Magazine/SM_AR4_Mag_Empty");
+	//MagazineComp->SetStaticMesh(MagazineMesh);
 	//MagazineComp->SetupAttachment(GetMesh(), "hand_Magazine");
 	//MagazineComp->SetVisibility(false);
 
@@ -127,6 +127,8 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &ACPlayer::OnAim);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &ACPlayer::OffAim);
 
+	PlayerInputComponent->BindAction("AutoFire", IE_Pressed, this, &ACPlayer::OnAutoFire);
+
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &ACPlayer::Reload);
 }
 
@@ -188,6 +190,13 @@ void ACPlayer::OnRifle()
 	}
 
 	AR4->Equip();
+}
+
+void ACPlayer::OnAutoFire()
+{
+	if (AR4->IsFiring()) return;
+
+	AR4->ToggleAutoFiring();
 }
 
 void ACPlayer::Reload()

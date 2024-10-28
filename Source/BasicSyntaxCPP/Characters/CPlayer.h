@@ -63,6 +63,8 @@ private:
 
 	void OnRifle();
 
+	void OnAutoFire();
+
 	void Reload();
 
 public:
