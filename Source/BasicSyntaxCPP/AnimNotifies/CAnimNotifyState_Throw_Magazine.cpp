@@ -1,12 +1,19 @@
 #include "CAnimNotifyState_Throw_Magazine.h"
 #include "Weapons/CWeaponInterface.h"
+#include "GameFramework/Character.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Weapons/CAR4.h"
 
 void UCAnimNotifyState_Throw_Magazine::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
+		
+	OwnerCharacter = OwnerCharacter = Cast<ACharacter>(MeshComp->GetOwner());
 
 	ICWeaponInterface* OwnerInterface = Cast<ICWeaponInterface>(MeshComp->GetOwner());
+
+	Loc = OwnerCharacter->GetMesh()->GetSocketLocation("hand_Magazine");
+	Rot = OwnerCharacter->GetMesh()->GetSocketRotation("hand_Magazine");
 
 	if (OwnerInterface)
 	{
@@ -33,7 +40,7 @@ void UCAnimNotifyState_Throw_Magazine::NotifyEnd(USkeletalMeshComponent* MeshCom
 
 		if (AR4)
 		{
-			AR4->ThrowMag();
+			AR4->ThrowMag(Loc, Rot);
 		}
 	}
 }

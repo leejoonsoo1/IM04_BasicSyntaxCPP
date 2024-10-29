@@ -9,6 +9,7 @@
 #include "Weapons\CAR4.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/CAimWidget.h"
+#include "UI/CGameInfoWidget.h"
 
 // Sets default values
 ACPlayer::ACPlayer()
@@ -63,8 +64,9 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 
-	// Get Aim Widget Class Asset
+	// Get Widget Class Asset
 	CHelpers::GetClass(&AimWidgetClass, "/Game/UI/WB_Aim");
+	CHelpers::GetClass(&GameInfoWidgetClass, "/Game/UI/WB_GameInfo");
 }
 
 // Called when the game starts or when spawned
@@ -85,9 +87,18 @@ void ACPlayer::BeginPlay()
 	AR4 = GetWorld()->SpawnActor<ACAR4>(WeaponClass, SpawnParam);
 
 	// Create Aim Widget
-	AimWidget = CreateWidget<UCAimWidget>(GetController<APlayerController>(), AimWidgetClass);
-	AimWidget->AddToViewport();
-	AimWidget->SetVisibility(ESlateVisibility::Hidden);
+	if (AimWidgetClass)
+	{
+		AimWidget = CreateWidget<UCAimWidget>(GetController<APlayerController>(), AimWidgetClass);
+		AimWidget->AddToViewport();
+		AimWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (GameInfoWidgetClass)
+	{
+		GameInfoWidget = CreateWidget<UCGameInfoWidget>(GetController<APlayerController>(), GameInfoWidgetClass);
+		GameInfoWidget->AddToViewport();
+	}
 }
 
 // Called every frame
@@ -189,6 +200,8 @@ void ACPlayer::OnAutoFire()
 	if (AR4->IsFiring()) return;
 
 	AR4->ToggleAutoFiring();
+
+	AR4->IsbAutoFiring() ? GameInfoWidget->EnableAutoFire() : GameInfoWidget->DisableAutoFire();
 }
 
 void ACPlayer::Reload()
@@ -230,8 +243,6 @@ void ACPlayer::GetAimRay(FVector& OutAimStart, FVector& OutAimEnd, FVector& OutA
 	RandomConeDegree *= AR4->GetShootRange();
 	
 	OutAimEnd = OutAimStart + RandomConeDegree;
-
-	//FVector MuzzleSocketLoction = AR4->GetMesh()->GetSocketLocation("MuzzleFlash");
 }
 
 void ACPlayer::OnTarget()
@@ -261,7 +272,10 @@ void ACPlayer::OnAim()
 	ZoomIn();
 
 	// 보여지긴 하지만, 위젯과 마우스 충돌을 감지하지 않는다.
-	AimWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	if (AimWidget)
+	{
+		AimWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
 }
 
 void ACPlayer::OffAim() 
@@ -279,5 +293,8 @@ void ACPlayer::OffAim()
 
 	ZoomOut();
 
-	AimWidget->SetVisibility(ESlateVisibility::Hidden);
+	if (AimWidget) 
+	{
+		AimWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 }

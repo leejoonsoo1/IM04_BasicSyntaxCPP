@@ -41,6 +41,7 @@ ACAR4::ACAR4()
 	MontagePlayRate = 1.75f;
 	ShootRange = 10000.f;
 	MagazineSize = 30;
+	PitchSpeed = 0.25f;
 }
 
 void ACAR4::BeginPlay()
@@ -88,6 +89,7 @@ void ACAR4::Tick(float DeltaTime)
 			return;
 		}
 	}
+
 
 	OwnerInterface->OffTarget();
 }
@@ -162,20 +164,35 @@ void ACAR4::SpawnMag(FName Socket)
 	if (Mag)
 	{
 		MagComp = Mag->GetMesh();
-
+		
 		if (MagComp)
 		{
-			//MagComp->SetEnableGravity(true);
-			MagComp->SetupAttachment(OwnerCharacter->GetMesh());
+			Mag->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, Socket);
 		}
 	}
 }
 
-void ACAR4::ThrowMag()
+void ACAR4::ThrowMag(FVector Location, FRotator Rotation)
 {
 	if (MagComp)
 	{
 		MagComp->SetSimulatePhysics(true);
+		Mag->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+		// 위치와 회전 정보를 기반으로 던질 방향 계산
+		FVector ThrowDirection = Rotation.Vector(); // 회전에서 방향 벡터 얻기
+
+		// 힘의 크기 설정 (조정 가능)
+		float ThrowForceMagnitude = 100.0f;
+
+		// 힘을 계산
+		FVector ForceToAdd = ThrowDirection * ThrowForceMagnitude;
+
+		// 매거진의 메쉬 컴포넌트에 힘 추가
+		MagComp->AddImpulse(ForceToAdd, NAME_None, true);
+
+		// 매거진의 위치를 던질 위치로 설정
+		Mag->SetActorLocation(Location);
 	}
 }
 
@@ -205,6 +222,8 @@ void ACAR4::OnFire()
 	}
 
 	bFiring = true;
+
+	CurrentPitch = 0.f;
 
 	Firing_Internal();
 }
@@ -270,7 +289,6 @@ void ACAR4::Firing_Internal()
 
 		if (MagazineSize == 0)
 		{
-			//DisableAim();
 			Reload();
 		}
 	}
@@ -285,6 +303,14 @@ void ACAR4::Firing_Internal()
 	QueryParams.AddIgnoredActor(this);
 	QueryParams.AddIgnoredActor(OwnerCharacter);
 
+	// Increase Pitch
+	CurrentPitch -= PitchSpeed * GetWorld()->GetDeltaSeconds();
+	
+	if (CurrentPitch > -PitchSpeed)
+	{
+		OwnerCharacter->AddControllerPitchInput(CurrentPitch);
+	}
+	
 	FHitResult Hit;
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECollisionChannel::ECC_Visibility, QueryParams))
 	{

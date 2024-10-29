@@ -4,6 +4,8 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "CAnimNotifyState_Throw_Magazine.generated.h"
 
+class ACharacter;
+
 UCLASS()
 class BASICSYNTAXCPP_API UCAnimNotifyState_Throw_Magazine : public UAnimNotifyState
 {
@@ -12,4 +14,9 @@ class BASICSYNTAXCPP_API UCAnimNotifyState_Throw_Magazine : public UAnimNotifySt
 public:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
+
+private:
+	ACharacter* OwnerCharacter;
+	FVector		Loc;
+	FRotator Rot;
 };

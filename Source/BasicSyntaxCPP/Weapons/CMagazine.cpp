@@ -18,5 +18,5 @@ void ACMagazine::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetLifeSpan(3);
+	SetLifeSpan(5);
 }

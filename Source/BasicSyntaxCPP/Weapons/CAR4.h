@@ -57,7 +57,7 @@ public:
 	void End_UnEquip();
 
 	void SpawnMag(FName Socket);
-	void ThrowMag();
+	void ThrowMag(FVector Location, FRotator Rotation);
 
 	void DestroyMag();
 
@@ -123,6 +123,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Effect")
 	UMaterial* DecalMaterial;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
+	float PitchSpeed;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
 	UStaticMeshComponent* MagComp;
 
@@ -140,6 +143,8 @@ private:
 	
 	FTimerHandle AutoFireTimer;
 	FTimerHandle TimeHandle;
+
+	float CurrentPitch;
 
 	int MagazineSize;
 };
