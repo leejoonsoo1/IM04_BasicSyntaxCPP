@@ -40,8 +40,9 @@ ACAR4::ACAR4()
 	HandSocket = "Hand_AR4";
 	MontagePlayRate = 1.75f;
 	ShootRange = 10000.f;
-	MagazineSize = 30;
+	CurrentAmmo = 30;
 	PitchSpeed = 0.25f;
+	MagazineSize = 30;
 }
 
 void ACAR4::BeginPlay()
@@ -251,7 +252,7 @@ void ACAR4::End_Reload()
 {
 	bReload = false;
 	bPlayingMontage = false;
-	MagazineSize = 30;
+	CurrentAmmo = 30;
 }
 
 void ACAR4::Reload()
@@ -285,9 +286,9 @@ void ACAR4::Firing_Internal()
 	if (BulletClass)
 	{
 		GetWorld()->SpawnActor<ACBullet>(BulletClass, MuzzleLocation, Direction.Rotation());
-		MagazineSize--;
+		CurrentAmmo--;
 
-		if (MagazineSize == 0)
+		if (CurrentAmmo == 0)
 		{
 			Reload();
 		}
@@ -332,4 +333,9 @@ void ACAR4::Firing_Internal()
 			HitComp->AddImpulseAtLocation(Direction * 30000.f, OwnerCharacter->GetActorLocation());
 		}
 	}
+}
+
+int ACAR4::GetCurrentAmmo()
+{
+	return CurrentAmmo;
 }

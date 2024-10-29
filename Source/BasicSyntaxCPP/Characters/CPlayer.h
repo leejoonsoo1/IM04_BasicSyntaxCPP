@@ -75,6 +75,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetBodyColor();
 
+	UCGameInfoWidget* GetGameInfoWidget() { return GameInfoWidget; }
+
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
@@ -85,9 +87,6 @@ protected:
 	
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UStaticMeshComponent* BackPackComp;
-
-	//UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-	//UStaticMeshComponent* MagazineComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
 	TSubclassOf<ACAR4> WeaponClass;

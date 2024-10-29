@@ -12,6 +12,7 @@ class USoundCue;
 class UStaticMeshComponent;
 class UParticleSystem;
 class ACMagazine;
+class UCGameInfoWidget;
 
 UCLASS()
 class BASICSYNTAXCPP_API ACAR4 : public AActor, public CWeapon
@@ -38,11 +39,15 @@ public:
 	FORCEINLINE bool IsFiring() { return bFiring; }
 	FORCEINLINE bool IsbAutoFiring() { return bAutoFiring; }
 	FORCEINLINE bool IsReLoading() { return bReload; }
+	//FORCEINLINE ACAR4* GetAR4() { return this; }
+	FORCEINLINE int GetMagazineSize() { return MagazineSize; }
 	FORCEINLINE USkeletalMeshComponent* GetMesh() { return MeshComp; }
+
+	UFUNCTION(BlueprintCallable)
+	int GetCurrentAmmo();
 
 	void ToggleAutoFiring();
 
-//	FORCEINLINE USkeletalMeshComponent* GetMesh() { return MeshComp; }
 	FORCEINLINE float GetShootRange() { return ShootRange; }
 
 	void EnableAim();
@@ -76,6 +81,9 @@ private:
 protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 	USkeletalMeshComponent* MeshComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ammo")
+	int CurrentAmmo;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Socket")
@@ -133,6 +141,7 @@ private:
 	ACharacter* OwnerCharacter;
 	CWeapon* Weapon;
 	ACMagazine* Mag;
+	UCGameInfoWidget* GameInfoWidget;
 
 	bool bEquipped;
 	bool bPlayingMontage;

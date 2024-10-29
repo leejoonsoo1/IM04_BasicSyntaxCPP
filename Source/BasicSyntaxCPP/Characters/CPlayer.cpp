@@ -84,7 +84,11 @@ void ACPlayer::BeginPlay()
 	// Spawn AR4
 	FActorSpawnParameters SpawnParam;
 	SpawnParam.Owner = this;
-	AR4 = GetWorld()->SpawnActor<ACAR4>(WeaponClass, SpawnParam);
+
+	if (WeaponClass)
+	{
+		AR4 = GetWorld()->SpawnActor<ACAR4>(WeaponClass, SpawnParam);
+	}
 
 	// Create Aim Widget
 	if (AimWidgetClass)
