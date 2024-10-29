@@ -1,10 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "CMagazine.generated.h"
+
+class UStaticMeshComponent;
+class OwnerCharacter;
 
 UCLASS()
 class BASICSYNTAXCPP_API ACMagazine : public AActor
@@ -12,15 +13,18 @@ class BASICSYNTAXCPP_API ACMagazine : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ACMagazine();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
+	FORCEINLINE UStaticMeshComponent* GetMesh() { return MeshComp; }
 
+public:
+
+
+protected:
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
+	UStaticMeshComponent* MeshComp;
 };

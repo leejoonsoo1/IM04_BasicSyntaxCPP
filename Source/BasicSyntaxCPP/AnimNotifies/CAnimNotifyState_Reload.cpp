@@ -5,8 +5,8 @@
 void UCAnimNotifyState_Reload::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
-	
 	ICWeaponInterface* OwnerInterface = Cast<ICWeaponInterface>(MeshComp->GetOwner());
+
 	if (OwnerInterface)
 	{
 		ACAR4* AR4 = OwnerInterface->GetWeapon();

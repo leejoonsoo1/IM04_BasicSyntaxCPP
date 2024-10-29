@@ -8,6 +8,7 @@
 #include "Sound/SoundCue.h"
 #include "CWeaponInterface.h"
 #include "CBullet.h"
+#include "CMagazine.h"
 
 static TAutoConsoleVariable<bool> CVarDrawDebugLine(TEXT("IM.DrawDebug"), false, TEXT("Visible AR4 aim line"), ECVF_Cheat);
 
@@ -18,26 +19,28 @@ ACAR4::ACAR4()
 	CHelpers::CreateSceneComponent(this, &MeshComp, "MeshComp");
 	
 	USkeletalMesh* MeshAsset;
-	CHelpers::GetAsset(&MeshAsset, "/Game/Weapons/Meshes/AR4/SK_AR4");
+	CHelpers::GetAsset(&MeshAsset,		"/Game/Weapons/Meshes/AR4/SK_AR4");
 	MeshComp->SetSkeletalMesh(MeshAsset);
 
-	CHelpers::GetAsset(&EquipMontage, "/Game/Character/Animations/AR4/Rifle_Grab_Montage");
+	CHelpers::GetAsset(&EquipMontage,	"/Game/Character/Animations/AR4/Rifle_Grab_Montage");
 	CHelpers::GetAsset(&UnEquipMontage, "/Game/Character/Animations/AR4/Rifle_UnGrab_Montage");
-	CHelpers::GetAsset(&ReLoadMontage, "/Game/Character/Animations/AR4/Rifle_Jog_Reload_Montage");
+	CHelpers::GetAsset(&ReLoadMontage,	"/Game/Character/Animations/AR4/Rifle_Jog_Reload_Montage");
 
-	CHelpers::GetClass(&ShakeClass, "/Game/AR4/Shake_Fire");
-	CHelpers::GetClass(&BulletClass, "/Game/AR4/BP_CBullet");
+	CHelpers::GetClass(&ShakeClass,		"/Game/AR4/Shake_Fire");
+	CHelpers::GetClass(&BulletClass,	"/Game/AR4/BP_CBullet");
+	CHelpers::GetClass(&MagazineClass,	"/Game/AR4/BP_CMagaine");
 
-	CHelpers::GetAsset(&MuzzleEffect, "/Game/Particles_Rifle/Particles/VFX_Muzzleflash");
-	CHelpers::GetAsset(&EjectEffect, "/Game/Particles_Rifle/Particles/VFX_Eject_bullet");
-	CHelpers::GetAsset(&ImpactEffect, "/Game/Particles_Rifle/Particles/VFX_Impact_Default");
-	CHelpers::GetAsset(&FireSound, "/Game/Sounds/S_RifleShoot_Cue");
-	CHelpers::GetAsset(&DecalMaterial, "/Game/Materials/M_Decal");
+	CHelpers::GetAsset(&MuzzleEffect,	"/Game/Particles_Rifle/Particles/VFX_Muzzleflash");
+	CHelpers::GetAsset(&EjectEffect,	"/Game/Particles_Rifle/Particles/VFX_Eject_bullet");
+	CHelpers::GetAsset(&ImpactEffect,	"/Game/Particles_Rifle/Particles/VFX_Impact_Default");
+	CHelpers::GetAsset(&FireSound,		"/Game/Sounds/S_RifleShoot_Cue");
+	CHelpers::GetAsset(&DecalMaterial,	"/Game/Materials/M_Decal");
 
 	HolsterSocket = "Holster_AR4";
 	HandSocket = "Hand_AR4";
 	MontagePlayRate = 1.75f;
 	ShootRange = 10000.f;
+	MagazineSize = 30;
 }
 
 void ACAR4::BeginPlay()
@@ -102,6 +105,7 @@ void ACAR4::EnableAim()
 void ACAR4::DisableAim()
 { 
 	bAiming = false; 
+	GetWorld()->GetTimerManager().ClearTimer(AutoFireTimer);
 }
 
 void ACAR4::Equip()
@@ -148,6 +152,42 @@ void ACAR4::End_UnEquip()
 	bPlayingMontage = false;
 }
 
+void ACAR4::SpawnMag(FName Socket)
+{
+	FVector		Loc = OwnerCharacter->GetMesh()->GetSocketLocation(Socket);
+	FRotator	Rot = OwnerCharacter->GetMesh()->GetSocketRotation(Socket);
+	
+	Mag = GetWorld()->SpawnActor<ACMagazine>(MagazineClass, Loc, Rot);
+	
+	if (Mag)
+	{
+		MagComp = Mag->GetMesh();
+
+		if (MagComp)
+		{
+			//MagComp->SetEnableGravity(true);
+			MagComp->SetupAttachment(OwnerCharacter->GetMesh());
+		}
+	}
+}
+
+void ACAR4::ThrowMag()
+{
+	if (MagComp)
+	{
+		MagComp->SetSimulatePhysics(true);
+	}
+}
+
+void ACAR4::DestroyMag()
+{
+	if (Mag)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(TimeHandle);
+		Mag->Destroy();
+	}
+}
+
 void ACAR4::OnFire()
 {
 	if (!bEquipped) return;
@@ -182,13 +222,17 @@ void ACAR4::OffFire()
 void ACAR4::Begin_Reload()
 {
 	bReload = true;
+	bFiring = false;
 	bPlayingMontage = true;
+	
+	GetWorld()->GetTimerManager().ClearTimer(AutoFireTimer);
 }
 
 void ACAR4::End_Reload()
 {
 	bReload = false;
 	bPlayingMontage = false;
+	MagazineSize = 30;
 }
 
 void ACAR4::Reload()
@@ -222,6 +266,13 @@ void ACAR4::Firing_Internal()
 	if (BulletClass)
 	{
 		GetWorld()->SpawnActor<ACBullet>(BulletClass, MuzzleLocation, Direction.Rotation());
+		MagazineSize--;
+
+		if (MagazineSize == 0)
+		{
+			//DisableAim();
+			Reload();
+		}
 	}
 
 	// Play Effect

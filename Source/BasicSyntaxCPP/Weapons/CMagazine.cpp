@@ -1,27 +1,22 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "CMagazine.h"
+#include "BasicSyntaxCpp.h"
+#include "Components\StaticMeshComponent.h"
+#include "GameFramework\Character.h"
 
-// Sets default values
 ACMagazine::ACMagazine()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	CHelpers::CreateSceneComponent(this, &MeshComp, "MeshComp");
 
+	UStaticMesh* MeshAsset;
+	CHelpers::GetAsset(&MeshAsset, "/Game/Weapons/Meshes/Magazine/SM_AR4_Mag_Empty");
+	MeshComp->SetStaticMesh(MeshAsset);
+	MeshComp->SetCollisionProfileName("Custom");
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
-// Called when the game starts or when spawned
 void ACMagazine::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	SetLifeSpan(3);
 }
-
-// Called every frame
-void ACMagazine::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

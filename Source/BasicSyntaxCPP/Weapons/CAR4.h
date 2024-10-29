@@ -9,7 +9,9 @@ class UAnimMontage;
 class ACharacter;
 class ACBullet;
 class USoundCue;
+class UStaticMeshComponent;
 class UParticleSystem;
+class ACMagazine;
 
 UCLASS()
 class BASICSYNTAXCPP_API ACAR4 : public AActor, public CWeapon
@@ -36,9 +38,11 @@ public:
 	FORCEINLINE bool IsFiring() { return bFiring; }
 	FORCEINLINE bool IsbAutoFiring() { return bAutoFiring; }
 	FORCEINLINE bool IsReLoading() { return bReload; }
+	FORCEINLINE USkeletalMeshComponent* GetMesh() { return MeshComp; }
+
 	void ToggleAutoFiring();
 
-	FORCEINLINE USkeletalMeshComponent* GetMesh() { return MeshComp; }
+//	FORCEINLINE USkeletalMeshComponent* GetMesh() { return MeshComp; }
 	FORCEINLINE float GetShootRange() { return ShootRange; }
 
 	void EnableAim();
@@ -51,6 +55,11 @@ public:
 	void UnEquip();
 	void Begin_UnEquip();
 	void End_UnEquip();
+
+	void SpawnMag(FName Socket);
+	void ThrowMag();
+
+	void DestroyMag();
 
 public:
 	void OnFire();
@@ -96,6 +105,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
 	TSubclassOf<ACBullet> BulletClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
+	TSubclassOf<ACMagazine> MagazineClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Effect")
 	UParticleSystem* MuzzleEffect;
 
@@ -111,9 +123,13 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Effect")
 	UMaterial* DecalMaterial;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
+	UStaticMeshComponent* MagComp;
+
 private:
 	ACharacter* OwnerCharacter;
 	CWeapon* Weapon;
+	ACMagazine* Mag;
 
 	bool bEquipped;
 	bool bPlayingMontage;
@@ -121,6 +137,9 @@ private:
 	bool bFiring;
 	bool bReload;
 	bool bAutoFiring;
-
+	
 	FTimerHandle AutoFireTimer;
+	FTimerHandle TimeHandle;
+
+	int MagazineSize;
 };
