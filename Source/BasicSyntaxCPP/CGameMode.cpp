@@ -15,5 +15,5 @@ ACGameMode::ACGameMode()
 	//	DefaultPawnClass = PlayerClass.Class;
 	//}
 
-	CHelpers::GetClass(&DefaultPawnClass, "/Game/Player/BP_CPlayer");
+	//CHelpers::GetClass(&DefaultPawnClass, "/Game/Player/BP_CPlayer");
 }
